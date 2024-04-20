@@ -1,0 +1,125 @@
+$very-light-grey: #f7f7f9;
+$dark-primary: #001848;
+$dark-gray: #6C7283;
+$medium-gray: #bdc3d5;
+$light-gray: #eaecf2;
+$white: white;
+
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-size: 1rem;
+  line-height: 1.5;
+  background-color: $very-light-grey;
+  text-align: center;
+  color: $dark-primary;
+  min-height: 100vh;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0
+}
+
+h3 {
+  font-weight: normal;
+}
+
+.tag {
+  width: fit-content;
+  margin: 0;
+  background-color: $light-gray;
+  // border-color: $medium-gray;
+ //  border-style: solid;
+  // border-width: 0.5px;
+  // background-color: transparent;
+  padding-inline: 0.2rem;
+}
+
+.centered-max-width-content {
+  margin: auto;
+  max-width: 1180px;
+}
+
+.meta-header {
+  color: $dark-gray;
+  margin-right: 0.2rem;
+}
+
+.paper-object {
+  text-align: left;
+  width: 100%;
+  padding: 1.5rem 0;
+}
+
+.metadata-row {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  column-gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+@media screen and (max-width: 66rem) {
+  .result {
+      display: block;
+  }
+}
+
+.main-section-padding {
+  padding-left: 5%;
+  padding-right: 5%;
+}
+
+// Search bar
+.search-bar {
+  padding: 0.5rem;
+  width: 100%;
+  max-height: 25dvh;
+  margin: 0;
+  border-radius: .75rem;
+  border-color: $dark-primary;
+  border-style: solid;
+  border-width: 1px;
+  background-color: transparent;
+}
+
+input::placeholder {
+  font-size: 1rem;
+}
+
+@mixin button-base() {
+  @include typography(button);
+  @include ripple-surface;
+  @include ripple-radius-bounded;
+
+  display: inline-flex;
+  position: relative;
+  height: $button-height;
+  border: none;
+  vertical-align: middle;
+
+  &:hover {
+      cursor: pointer;
+  }
+
+  &:disabled {
+      color: $mdc-button-disabled-ink-color;
+      cursor: default;
+      pointer-events: none;
+  }
+}
+
+$myColor: red;
+
+h1 {
+  color: $myColor;
+}
