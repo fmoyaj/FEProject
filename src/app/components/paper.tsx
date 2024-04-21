@@ -1,34 +1,40 @@
-import { useState } from "react";
+import { HTMLAttributes } from "react";
 import { TextFormatter, type PaperInfo } from "../lib";
-import { Chart } from "./chart";
+import { useDisclosure } from '../utils/hooks';
+import { AccordionRow } from './accordionRow';
+import { ArrowIcon } from './arrow-icon';
+import { PaperChart } from './chart';
+import { DownCaretIcon } from './down-caret';
+import { ExpandableLabel } from "./expandableLabel";
+import { MainInfoRow } from './mainInfoRow';
 
 const MAX_VISIBLE_AUTHORS = 5;
-const MAX_CHARACTERS = 200;
+const MAX_CHARACTERS = 360;
 
 function Abstract({ abstract, keywordsRegExp }: { abstract: string, keywordsRegExp: RegExp }) {
-  const [seeMore, setSeeMore] = useState(false);
-  const handleToggleSeeMore = () => {
-    setSeeMore((pastSeeMore) => !pastSeeMore)
-  };
+  const { isOpen, toggleOpen } = useDisclosure();
 
-  const seeButton = <button type="button" onClick={handleToggleSeeMore}>
-    {`See ${seeMore ? "less" : "more"}`}
-  </button>;
+  const viewMoreButton = <ExpandableLabel
+    label={{ open: 'View less', closed: 'View more', isEnd: true }}
+    isOpen={isOpen}
+    toggleOpen={toggleOpen}
+    indicator={(style) => <DownCaretIcon style={style as HTMLAttributes<SVGAElement>} />}
+  />
 
   return <div>
-    {
-      !seeMore && seeButton
-    }
-    <p dangerouslySetInnerHTML={{
-      __html:
-        TextFormatter.boldWord(
-          `${abstract.slice(0, seeMore ? undefined : MAX_CHARACTERS)}${abstract.length > 0 ?
-            "..." : ""}`,
-          keywordsRegExp)
-    }} />
-    {
-      seeMore && seeButton
-    }
+    <p className="accordion-button">Abstract</p>
+    <div className='abstract'>
+      <p dangerouslySetInnerHTML={{
+        __html:
+          TextFormatter.boldWord(
+            `${abstract.slice(0, isOpen ? undefined : MAX_CHARACTERS)}${abstract.length > 0 ?
+              "..." : ""}`,
+            keywordsRegExp)
+      }} />
+      {
+        viewMoreButton
+      }
+    </div>
   </div>
 }
 
@@ -36,60 +42,70 @@ function Abstract({ abstract, keywordsRegExp }: { abstract: string, keywordsRegE
 export function Paper(
   query: string,
   keywords: string[],
-  { id, title, authors, yearPublished, publisher, abstract, fieldOfStudy, downloadUrl, documentType }: PaperInfo) {
+  { id, title, authors, yearPublished, publisher, abstract, downloadUrl, fieldOfStudy }: PaperInfo) {
   const keywordsRegExp = new RegExp(`(${keywords.join('|')})s?`, 'gi');
+  const isBasicInfoAvailable = yearPublished || publisher;
+
   return <div key={id} className="paper-object">
-    <div>
+    <div className='flex-col'>
       <h3 dangerouslySetInnerHTML={{ __html: TextFormatter.boldWord(title, keywordsRegExp) }} />
       <div>
         {
-          yearPublished &&
-          <p>Published on {yearPublished}</p>
-        }
-        {
-          fieldOfStudy &&
-          <p>{TextFormatter.capitalizeFirstLetter(fieldOfStudy)}</p>
-        }
-        <div className="metadata-row">
-          {
-            authors &&
-            <>
-              <p className="meta-header">Authors</p>
-              {authors !== null &&
-                authors.slice(0, MAX_VISIBLE_AUTHORS).map(({ name }, i) => (
-                  <p key={`${id}—${name}—${i}`} className="tag">{name}</p>
-                ))
+          isBasicInfoAvailable &&
+          <table>
+            <tbody>
+              {
+                yearPublished &&
+                <MainInfoRow label='Date published' info={yearPublished} />
               }
               {
-                authors && authors.length > MAX_VISIBLE_AUTHORS &&
-                <p className="tag">{authors.length} more authors</p>
+                publisher &&
+                <MainInfoRow label='Publisher' info={TextFormatter.cleanString(publisher)} />
               }
-            </>
-          }
-        </div>
+            </tbody>
+          </table>
+        }
         {
-          publisher &&
-          <div className="metadata-row">
-            <p className="meta-header">Publisher</p>
-            <p>{TextFormatter.cleanString(publisher)}</p>
+          authors &&
+          <div>
+            <AccordionRow label='Authors'>
+              <div className="flex-row">
+                {
+                  authors &&
+                  <>
+                    {authors !== null &&
+                      authors.slice(0, MAX_VISIBLE_AUTHORS).map(({ name }, i) => (
+                        <p key={`${id}—${name}—${i}`} className="tag">{name}</p>
+                      ))
+                    }
+                    {
+                      authors && authors.length > MAX_VISIBLE_AUTHORS &&
+                      <p className="tag">{authors.length} more authors</p>
+                    }
+                  </>
+                }
+              </div>
+            </AccordionRow>
           </div>
         }
       </div>
-    </div>
-    {
-      abstract &&
       <div>
-        <p className="meta-header">Abstract</p>
-        <Abstract abstract={abstract} keywordsRegExp={keywordsRegExp} />
-      </div>
+        {
+          abstract &&
+          <Abstract abstract={abstract} keywordsRegExp={keywordsRegExp} />
 
-    }
-    {
-      downloadUrl &&
-      <div>
-        <a href={downloadUrl} target="_blank" rel="noreferrer noopener">Download ↗</a>
+        }
       </div>
-    }
-    <Chart sanitizedQuery={query} title={title ?? ""} abstract={abstract ?? ""} keywords={keywords} />
+      <div className='flex-row'>
+        {
+          downloadUrl &&
+          <a href={downloadUrl} target="_blank" rel="noreferrer noopener" className='secondary-button'>
+            <span>Download</span>
+            <ArrowIcon />
+          </a>
+        }
+        <PaperChart sanitizedQuery={query} title={title ?? ""} abstract={abstract ?? ""} keywords={keywords} />
+      </div>
+    </div>
   </div>
 }

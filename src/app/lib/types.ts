@@ -31,3 +31,10 @@ export interface ChartInfo {
   similarWords: Set<string>
 }
 
+export interface Option<T> {
+  id: string;
+  label: string;
+  value: T;
+}
+
+

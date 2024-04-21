@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState } from "react";
 
 interface Props {
@@ -9,7 +7,7 @@ interface Props {
   keywords: string[];
 }
 
-export function Chart({ title, abstract, keywords }: Props) {
+export function PaperChart({ title, abstract, keywords }: Props) {
   const [words, setWords] = useState<string[]>([]);
 
   useEffect(() => {
@@ -26,10 +24,11 @@ export function Chart({ title, abstract, keywords }: Props) {
   }, [abstract, keywords, title]);
 
   return <div>
-    {
+    <button type='button' className='highlight-button' onClick={() => { }}>View insights</button>
+    {/*     {
       words &&
       <p>{JSON.stringify(words)}</p>
-    }
+    } */}
     {/*     {
       sanitizedQuery !== "" &&
       <div>

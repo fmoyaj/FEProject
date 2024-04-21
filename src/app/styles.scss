@@ -1,10 +1,51 @@
-$very-light-grey: #f7f7f9;
+@import "_mixins.scss";
+
+// Colors
+$light-black: #2e414f;
 $dark-primary: #001848;
+$light-primary: #4f52b4;
 $dark-gray: #6C7283;
 $medium-gray: #bdc3d5;
 $light-gray: #eaecf2;
+$very-light-grey: #f7f7f9;
 $white: white;
 
+// Gradients
+$yellow-pink-gradient: linear-gradient(to right,#fbdf3f, #f76195);
+
+// Height
+$header-height: 48px;
+
+// Layers
+$layer-header:100;
+$layer-overlay: 500;
+$layer-footer: 50;
+
+// Size
+$page-max-width: 1024px;
+
+// Padding and margin
+$page-padding-default: 32px;
+$page-padding-y: 120px;
+$page-margin-bottom: 164px;
+$main-margin-top: 64px;
+
+// Button
+$button-corner-radius: 9999px;
+$button-padding: 0 0.75rem;
+$button-gap: 0.25rem;
+$button-height-xs: 1.5rem;
+$button-height-sm: 2rem;
+
+// Transitions
+$ease-out-quad: cubic-bezier(0.25,0.46,0.45,0.94);
+$ease-in-quad: cubic-bezier(0.55,0.085,0.68,0.53);
+
+// Font sizes
+$font-xs: 0.625rem;
+$font-sm: 0.9rem;
+$font-normal: 1rem;
+$font-large: 1.125rem;
 
 * {
   box-sizing: border-box;
@@ -13,10 +54,12 @@ $white: white;
 body {
   font-size: 1rem;
   line-height: 1.5;
-  background-color: $very-light-grey;
+  background-color: $white;
   text-align: center;
-  color: $dark-primary;
+  color: $light-black;
+  height: 100%;
   min-height: 100vh;
+  margin: 0;
 }
 
 p,
@@ -31,95 +74,292 @@ h6 {
 
 h3 {
   font-weight: normal;
+  font-size: $font-large;
+  color: lighten($dark-primary, 10%);
+}
+
+a {
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+ul {
+  list-style-type: none;
+}
+
+button, input, select, div, span, table, tr, td, a, ul, li {
+  font-family: inherit;
+  font-variation-settings: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  vertical-align: baseline;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  min-height: 100vh;
+  padding-top: $header-height;
+}
+
+.main-content {
+  width: 100%;
+  overflow-x: hidden;
+  margin-top: calc(-1 * $header-height);
+  padding-top: $header-height;
+  padding-left: $page-padding-default;
+  padding-right: $page-padding-default;
+  margin-bottom: -$page-margin-bottom;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 100vh;
+  max-width: 950px;
+}
+
+.header {
+  display: block;
+  position: fixed;
+  height: $header-height;
+  max-width: calc($page-max-width + $page-padding-default + $page-padding-default);
+  width: 100%;
+  margin: 0 auto;
+  padding-left: $page-padding-default;
+  padding-right: $page-padding-default;
+  background-color: $white;
+
+  p {
+    color: lighten($dark-primary, 10%)
+  }
+}
+
+.logo {
+  width: fit-content;
+  position: relative;
+  padding-top: 11.5px;
+
+  p {
+    position: fixed;
+    left: calc(103px) + $page-padding-default;
+    top: 20px;
+  }
+}
+
+.search {
+  margin-top: $main-margin-top;
+}
+
+.search-bar {
+  padding: 0 1rem;
+  flex: 1 1 auto;
+  align-items: center;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 70rem;
+  display: flex;
+  flex-direction: column;
+  background-color: $very-light-grey;
+  @include border(darken($very-light-grey, 5%), 0.5rem);
+
+  input {
+    appearance: none;
+    background: transparent;
+    height: 3.5rem;
+    margin-left: .75rem;
+    margin-right: 1rem;
+    flex: auto;
+    min-width: 0;
+    font-size: 1rem;
+    border: 0;
+    width: 100%
+  }
+
+  input:focus {
+    outline: none;
+  }
+}
+
+.primary-button {
+  @include button($button-height-sm, $light-primary, $white, $font-sm, $light-primary);
+  @include hover {
+    color: $white;
+    filter: brightness(115%);
+  }
+  transition: .16s $ease-out-quad;
+  transition-property: border, background-color, color, box-shadow, opacity, filter, transform;
+}
+
+.secondary-button {
+  @include button($button-height-sm, $white, $light-primary, $font-sm, $light-primary);
+  @include hover {
+    color: $white;
+    background-color: $light-primary;
+
+    svg {
+      fill: $white
+    }
+  }
+  transition: .16s $ease-out-quad;
+  transition-property: border, background-color, color, box-shadow, opacity, filter, transform;
+}
+
+.highlight-button {
+  @include button($button-height-sm, transparent, $white, $font-sm, transparent, $yellow-pink-gradient);
+  @include hover {
+    color: $white;
+    filter: brightness(110%);
+  }
+  transition: .16s $ease-out-quad;
+  transition-property: border, background-color, color, box-shadow, opacity, filter, transform;
+}
+
+.text-button {
+  @include button($button-height-xs, transparent, lighten($light-primary, 1%), $font-sm, transparent, none, 0);
+  background-color: transparent;
+}
+
+.accordion-button {
+  @include button(1.5rem, transparent, $dark-gray, 1rem, transparent, none, 1px);
+  background-color: transparent;
+}
+
+.loader {
+  width: 1.5rem;
+  padding: 0.25rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: $light-primary;
+  --_m:
+    conic-gradient(#0000 10%,#000),
+    linear-gradient(#000 0 0) content-box;
+  -webkit-mask: var(--_m);
+          mask: var(--_m);
+  -webkit-mask-composite: source-out;
+          mask-composite: subtract;
+  animation: l3 1s infinite linear;
+}
+@keyframes l3 {to{transform: rotate(1turn)}}
+
+.abstract {
+  p {
+    display: inline;
+  }
+}
+
+.info-row {
+  .label {
+    color: $dark-gray;
+  }
+
+  .info {
+    padding-left: 1rem;
+    font-weight: 500;
+    color: lighten($dark-primary, 15%);
+  }
 }
 
 .tag {
   width: fit-content;
-  margin: 0;
+  font-size: $font-sm;
   background-color: $light-gray;
-  // border-color: $medium-gray;
- //  border-style: solid;
-  // border-width: 0.5px;
-  // background-color: transparent;
+  color: $light-black;
+  margin: 0;
   padding-inline: 0.2rem;
+
+  @include variant('.primary') {
+    background-color: transparent;
+    color: $light-primary;
+    @include border(lighten($light-primary, 15%), 0);
+  }
 }
 
-.centered-max-width-content {
-  margin: auto;
-  max-width: 1180px;
-}
+.posts-list {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 
-.meta-header {
-  color: $dark-gray;
-  margin-right: 0.2rem;
+  @include md {
+    margin-left: 5rem !important;
+    margin-right: 5rem !important;
+  }
 }
 
 .paper-object {
   text-align: left;
   width: 100%;
   padding: 1.5rem 0;
+  border-bottom: 1px solid $light-gray;
 }
 
-.metadata-row {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  column-gap: 0.5rem;
-  font-size: 0.9rem;
-}
-
-@media screen and (max-width: 66rem) {
-  .result {
-      display: block;
-  }
-}
-
-.main-section-padding {
-  padding-left: 5%;
-  padding-right: 5%;
-}
-
-// Search bar
-.search-bar {
-  padding: 0.5rem;
-  width: 100%;
-  max-height: 25dvh;
-  margin: 0;
-  border-radius: .75rem;
-  border-color: $dark-primary;
-  border-style: solid;
-  border-width: 1px;
-  background-color: transparent;
-}
-
-input::placeholder {
-  font-size: 1rem;
-}
-
-@mixin button-base() {
-  @include typography(button);
-  @include ripple-surface;
-  @include ripple-radius-bounded;
-
-  display: inline-flex;
+.dropdown {
   position: relative;
-  height: $button-height;
-  border: none;
-  vertical-align: middle;
+  display: flex;
+  max-width: 5rem;
 
-  &:hover {
-      cursor: pointer;
+  button {
+    @include button($button-height-sm, $very-light-grey, $light-black, $font-sm, darken($very-light-grey, 5%));
+    justify-content: space-between;
+    width: 100%;
+
+    svg {
+      fill: $light-black;
+      width: $font-xs;
+      height: $font-xs;
+    }
   }
 
-  &:disabled {
-      color: $mdc-button-disabled-ink-color;
-      cursor: default;
-      pointer-events: none;
+  ul {
+    @include button(fit-content, $very-light-grey, $light-black, $font-sm, darken($very-light-grey, 5%), none, 0);
+    border-radius: 0.5rem;
+    position: absolute;
+    min-width: 1.5rem;
+    top: 100%;
+    margin-top: 0.25rem;
+    background-color: $very-light-grey;
+    gap: 0;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  li {
+    cursor: pointer;
+    padding: 0.25rem 0.75rem 0.25rem 0.75rem;
   }
 }
 
-$myColor: red;
+.description {
+  color: $dark-gray;
+  font-weight: 300;
+}
 
-h1 {
-  color: $myColor;
+// Utility classes
+.flex-col {
+  @include flex(0.5rem)
+}
+
+.flex-row {
+  @include flex(0.5rem, row);
+  align-items: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.text-sm {
+  font-size: $font-sm;
 }

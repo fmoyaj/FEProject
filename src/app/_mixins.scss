@@ -1,5 +1,94 @@
-@mixin desktop() {
-  @media (max-width: 600px) {
+@mixin variant($selector) {
+  @at-root #{$selector}#{&} {
     @content;
+  }
+}
+
+@mixin hover {
+  &:not([disabled]):hover {
+    @content;
+  }
+}
+
+@mixin flex($gap, $direction: column) {
+  display: flex;
+  flex-direction: $direction;
+  gap: $gap;
+}
+
+@mixin border($color, $border-radius) {
+  border-width: 1px;
+  border-style: solid;
+  border-color: $color;
+  border-radius: $border-radius;
+}
+
+@mixin removeFocus {
+  :focus:not(focus-visible) {
+    outline: none;
+  }
+}
+
+// Media breakpoints
+@mixin breakpoint($min-width){
+  @media (min-width: $min-width) {
+    @content;
+  }
+}
+
+@mixin sm {
+  @include breakpoint(640px) {
+    @content;
+  }
+}
+
+@mixin md {
+  @include breakpoint(768px) {
+    @content;
+  }
+}
+
+@mixin lg {
+  @include breakpoint(1024px) {
+    @content;
+  }
+}
+
+@mixin xl {
+  @include breakpoint(1280px) {
+    @content;
+  }
+}
+
+@mixin xxl {
+  @include breakpoint(1536px) {
+    @content;
+  }
+}
+
+// Button vars
+$button-corner-radius: 9999px;
+$button-padding: 0 0.75rem;
+$button-gap: 0.25rem;
+
+@mixin button($height, $background-color, $color, $font-size, $border-color, $background-image: none, $padding: $button-padding) {
+  height: $height;
+  line-height: $height;
+  background-color: $background-color;
+  color: $color;
+  font-size: $font-size;
+  font-weight: 400;
+  gap: $button-gap;
+  padding: $padding;
+  background-image: $background-image;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  min-width: max-content;
+  justify-content: center;
+  @include border($border-color, $button-corner-radius);
+
+  svg {
+    fill: $color
   }
 }

@@ -1,15 +1,26 @@
 'use client';
 
 import React, { useCallback, useMemo, useState } from 'react';
+import { Dropdown } from './components/dropdown';
 import { Paper } from './components/paper';
 import SearchBar from './components/searchBar';
 import { CoreAPIClient, QueryFormatter, type SearchResult } from './lib';
+import { Option } from './lib/types';
+
+const DEFAULT_RESULTS_NUM = { id: "50", label: "50", value: 50 };
+const RESULTS_NUM_OPTIONS: Option<number>[] = [
+  { id: "25", label: "25", value: 25 },
+  { id: "50", label: "50", value: 50 },
+  { id: "100", label: "100", value: 100 },
+  { id: "250", label: "250", value: 250 },
+];
 
 export default function Home() {
   const [query, setQuery] = useState<{ input: string, keywords: string[] }>({ input: "", keywords: [] });
-  const [numOfResults, setNumOfResults] = useState(10);
+  const [numOfResults, setNumOfResults] = useState(DEFAULT_RESULTS_NUM);
   const [queryResults, setQueryResults] = useState<SearchResult>();
   const coreApi = useMemo(() => new CoreAPIClient(), []);
+  const totalResultsFound = Number(queryResults?.results ? queryResults.results.length : 0).toLocaleString('en');
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const input = event.target.value;
@@ -17,12 +28,8 @@ export default function Home() {
     setQuery({ input, keywords });
   }
 
-  const handleNumberOfResultsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNumOfResults(Number(event.target.value));
-  }
-
   const queryPapers = useCallback(async (userQuery: string) => {
-    const results: SearchResult = await coreApi.getPapers(userQuery, numOfResults);
+    const results: SearchResult = await coreApi.getPapers(userQuery, numOfResults.value);
     console.log("results", results, results.results.length);
     setQueryResults(results);
 
@@ -30,28 +37,30 @@ export default function Home() {
   }, [numOfResults, coreApi]);
 
   return (
-    <div className="centered-max-width-content">
-      <h1>Cypris</h1>
-      <div className='main-section-padding'>
-        <div>
-          <form>
-            <SearchBar query={query.input} onChange={handleSearchChange} placeholder='Search papers' />
-            <div>
-              <label>Number of results</label>
-              <input type='number' value={numOfResults} onChange={handleNumberOfResultsChange} />
+    <div className='content'>
+      <div className='main-content'>
+        <div className='search flex-col'>
+          <SearchBar query={query.input}
+            onChange={handleSearchChange}
+            onSubmit={() => queryPapers(query.input)}
+            placeholder='What are you researching?' />
+          <div>
+            <div className='flex-row w-full'>
+              <p className='description text-sm'>Number of results</p>
+              <Dropdown
+                label="Number of results"
+                options={RESULTS_NUM_OPTIONS}
+                onSelect={(selectedOption) => setNumOfResults(selectedOption)}
+                selected={numOfResults}
+              />
             </div>
-            <button type='button' onClick={() => queryPapers(query.input)}>Submit</button>
-          </form>
+          </div>
         </div>
         <div>
-          <div>
-            <h2>Results</h2>
-            <p>Results for {query.input}</p>
-            <p>Parsed query {JSON.stringify(query.keywords)}</p>
-            {queryResults &&
-              <p>{queryResults.totalHits} results found</p>}
-          </div>
-          <div>
+          <div className='posts-list'>
+            <div>
+              <p className='description text-left'>{`Showing ${totalResultsFound} results`}</p>
+            </div>
             {
               queryResults?.results &&
               queryResults.results.map((paper) => Paper(query.input, query.keywords, paper))
