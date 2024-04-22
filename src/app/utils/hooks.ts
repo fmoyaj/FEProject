@@ -54,29 +54,35 @@ export function useQuery() {
   const [cleanQuery, setCleanQuery] = useState("");
   const [keywords, setKeywords] = useState<string[]>([]);
 
-  function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const input = event.target.value;
-
-    setRawQuery(input);
+  function updateAllQueryParams(query: string) {
+    setRawQuery(query);
 
     try {
-      const { normalizedQuery, keywords } = QueryFormatter.normalizeAndGetQueryKeywords(input);
+      const { normalizedQuery, keywords } = QueryFormatter.normalizeAndGetQueryKeywords(query);
       setCleanQuery(normalizedQuery);
       setKeywords(keywords);
+      return { normalizedQuery, keywords };
     } catch {
-      setCleanQuery(input);
+      setCleanQuery(query);
       setKeywords([]);
+      return { normalizedQuery: query, keywords: [] };
     }
   }
 
-  return { rawQuery, cleanQuery, keywords, handleInputChange };
+  function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const input = event.target.value;
+
+    updateAllQueryParams(input);
+  }
+
+  return { rawQuery, cleanQuery, keywords, handleInputChange, overrideQuery: updateAllQueryParams };
 }
 
 export function useFetchForQuery(limit: number) {
-  const { rawQuery, cleanQuery, keywords: innerKeywords, handleInputChange } = useQuery();
+  const { rawQuery, cleanQuery, keywords: innerKeywords, handleInputChange, overrideQuery } = useQuery();
   const [keywords, setKeywords] = useState<string[]>([]);
   const [coreStatus, setCoreStatus] = useState<APICallStatus>(APICallStatus.UNSUBMITTED);
-  const [searchResponse, setSearchResponse] = useState<SearchResult | null>(null);
+  const [searchResponse, setSearchResponse] = useState<SearchResult | null>();
   const { aggregateData, aggregateStatus, updateAggregateData } = useAggregateSearchData(innerKeywords);
 
   const submitQuery = useCallback(async () => {
@@ -97,10 +103,29 @@ export function useFetchForQuery(limit: number) {
       });
   }, [cleanQuery, limit, innerKeywords, updateAggregateData]);
 
+  const submitQueryWithValue = useCallback(async (value: string) => {
+    const { normalizedQuery, keywords } = overrideQuery(value);
+    setCoreStatus(APICallStatus.PENDING);
+    setSearchResponse(null);
+    const core = new CoreAPIClient();
+
+    await core.getPapers(normalizedQuery, limit)
+      .then((results) => {
+        setSearchResponse(results);
+        setKeywords(keywords);
+        setCoreStatus(APICallStatus.SUCCESS);
+        updateAggregateData(results.results);
+      })
+      .catch(() => {
+        setSearchResponse(null);
+        setCoreStatus(APICallStatus.FAIL);
+      });
+  }, [limit, updateAggregateData, overrideQuery]);
+
 
   return {
     handleInputChange, rawQuery, keywords, coreStatus, searchResponse, submitQuery,
-    aggregateData, aggregateStatus
+    aggregateData, aggregateStatus, submitQueryWithValue
   };
 }
 

@@ -481,6 +481,55 @@ button, input, select, div, span, table, tr, td, a, ul, li {
   }
 }
 
+.welcome-view {
+  width: 100%;
+  @include flex(2rem, column);
+
+  .welcome-header {
+    text-align: left;
+    font-size: $font-lg;
+    color: lighten($dark-primary, 10%);
+    font-weight: 500;
+  }
+
+  .help-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+
+    .sample-query {
+      width: 100%;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      @include border($light-primary, 0.75rem);
+      color: $light-primary;
+      background-color: transparent;
+      font-size: $font-normal;
+      @include hover {
+        color: $white;
+        background-color: $light-primary;
+      }
+
+      transition: .16s $ease-out-quad;
+      transition-property: border, background-color, color, box-shadow, opacity, filter, transform;
+
+      div {
+        text-align: left;
+      }
+
+      .query-title {
+        font-weight: 500;
+      }
+
+      .query-description {
+        font-weight: 300;
+      }
+
+    }
+  }
+}
+
 // Utility classes
 .flex-col {
   @include flex(0.5rem)

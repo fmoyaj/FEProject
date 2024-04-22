@@ -1,7 +1,7 @@
 import { HTMLAttributes, PropsWithChildren } from "react";
 import { useDisclosure } from '../utils/hooks';
 import { ExpandableLabel } from "./expandableLabel";
-import { RightCaretIcon } from "./right-caret";
+import { RightCaretIcon } from "./rightCaret";
 
 interface Props {
   label: string;

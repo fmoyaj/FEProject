@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Dropdown } from './components/dropdown';
 import { Paper } from './components/paper';
+import { SampleQuery } from './components/sampleQuery';
 import SearchBar from './components/searchBar';
 import { SearchInsights } from './components/searchInsights';
 import { APICallStatus, Option } from './lib/types';
@@ -21,15 +22,17 @@ export default function Home() {
   const {
     rawQuery,
     handleInputChange,
+    submitQueryWithValue,
     submitQuery,
     keywords,
     searchResponse,
     aggregateData,
     coreStatus,
-    aggregateStatus
+    aggregateStatus,
   } = useFetchForQuery(numOfResults.value);
   const totalResults = searchResponse?.results ? searchResponse.results.length : null;
   const isSearchPending = coreStatus === APICallStatus.PENDING;
+
 
   return (
     <div className='content'>
@@ -65,8 +68,48 @@ export default function Home() {
               aggregateCallStatus={aggregateStatus}
             />
             {
-              searchResponse?.results &&
-              searchResponse.results.map((paper) => Paper(keywords, paper))
+              (() => {
+                if (searchResponse === undefined) {
+                  return <div className='welcome-view'>
+                    <div>
+                      <p className='welcome-header'>Not sure where to start?</p>
+                      <p className='text-left description'>Try one of the sample queries to discover what Cypris can do for you</p>
+                    </div>
+                    <div className='help-grid'>
+                      <SampleQuery
+                        title='Medical research'
+                        description='protein intake AND weight loss'
+                        value='protein intake AND weight loss'
+                        onClick={submitQueryWithValue}
+                      />
+                      <SampleQuery
+                        title='Self-driving cars'
+                        description='patents AND lidar'
+                        value='patents AND lidar'
+                        onClick={submitQueryWithValue}
+                      />
+                      <SampleQuery
+                        title='Animal health'
+                        description='vaccines AND pets'
+                        value='vaccines AND pets'
+                        onClick={submitQueryWithValue}
+                      />
+                      <SampleQuery
+                        title='Alternative energy sources'
+                        description='nuclear power OR solar power'
+                        value='nuclear power OR solar power'
+                        onClick={submitQueryWithValue}
+                      />
+                    </div>
+                  </div>;
+                }
+
+                if (searchResponse === null) {
+                  return ([]).map((paper) => Paper(keywords, paper));
+                }
+
+                return searchResponse.results.map((paper) => Paper(keywords, paper));
+              })()
             }
           </div>
         </div>

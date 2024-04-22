@@ -2,7 +2,7 @@ import { HTMLAttributes } from "react";
 import { TextFormatter, type PaperInfo } from "../lib";
 import { useDisclosure } from '../utils/hooks';
 import { AccordionRow } from './accordionRow';
-import { ArrowIcon } from './arrow-icon';
+import { ArrowIcon } from './arrowIcon';
 import { DownCaretIcon } from './down-caret';
 import { ExpandableLabel } from "./expandableLabel";
 import { MainInfoRow } from './mainInfoRow';
