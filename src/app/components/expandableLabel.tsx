@@ -1,4 +1,4 @@
-import { CSSProperties } from "react";
+import { CSSProperties, LegacyRef } from "react";
 
 interface Props {
   label: {
@@ -12,6 +12,7 @@ interface Props {
   indicator: (style: CSSProperties) => React.ReactNode;
   buttonClassName?: string;
   indicatorRotationDegrees?: 90 | 180;
+  ref?: LegacyRef<HTMLButtonElement>
 }
 
 export function ExpandableLabel(
@@ -20,7 +21,8 @@ export function ExpandableLabel(
     toggleOpen,
     indicator,
     indicatorRotationDegrees = 180,
-    buttonClassName = 'text-button' }: Props) {
+    buttonClassName = 'text-button',
+    ref }: Props) {
   const indicatorStyle = {
     transform: isOpen ? `rotate(${indicatorRotationDegrees}deg)` : '',
     transition: 'transform 150ms ease',
@@ -28,7 +30,7 @@ export function ExpandableLabel(
   const labelElem = <span>{isOpen ? open : closed}</span>;
   const indicatorElem = indicator(indicatorStyle);
 
-  return <button type="button" className={buttonClassName} onClick={toggleOpen}>
+  return <button type="button" className={buttonClassName} onClick={toggleOpen} ref={ref}>
     {
       !isEnd && labelElem
     }

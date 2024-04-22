@@ -3,7 +3,6 @@ import { TextFormatter, type PaperInfo } from "../lib";
 import { useDisclosure } from '../utils/hooks';
 import { AccordionRow } from './accordionRow';
 import { ArrowIcon } from './arrow-icon';
-import { PaperChart } from './chart';
 import { DownCaretIcon } from './down-caret';
 import { ExpandableLabel } from "./expandableLabel";
 import { MainInfoRow } from './mainInfoRow';
@@ -32,6 +31,7 @@ function Abstract({ abstract, keywordsRegExp }: { abstract: string, keywordsRegE
             keywordsRegExp)
       }} />
       {
+        abstract.length > MAX_CHARACTERS &&
         viewMoreButton
       }
     </div>
@@ -40,7 +40,6 @@ function Abstract({ abstract, keywordsRegExp }: { abstract: string, keywordsRegE
 
 
 export function Paper(
-  query: string,
   keywords: string[],
   { id, title, authors, yearPublished, publisher, abstract, downloadUrl, fieldOfStudy }: PaperInfo) {
   const keywordsRegExp = new RegExp(`(${keywords.join('|')})s?`, 'gi');
@@ -104,7 +103,7 @@ export function Paper(
             <ArrowIcon />
           </a>
         }
-        <PaperChart sanitizedQuery={query} title={title ?? ""} abstract={abstract ?? ""} keywords={keywords} />
+        {/* <PaperChart title={title ?? ""} abstract={abstract ?? ""} keywords={keywords} /> */}
       </div>
     </div>
   </div>

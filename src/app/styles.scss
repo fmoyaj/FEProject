@@ -9,6 +9,7 @@ $medium-gray: #bdc3d5;
 $light-gray: #eaecf2;
 $very-light-grey: #f7f7f9;
 $white: white;
+$orange: #fa9e73;
 
 // Gradients
 $yellow-pink-gradient: linear-gradient(to right,#fbdf3f, #f76195);
@@ -28,7 +29,7 @@ $page-max-width: 1024px;
 $page-padding-default: 32px;
 $page-padding-y: 120px;
 $page-margin-bottom: 164px;
-$main-margin-top: 64px;
+$main-margin-top: 52px;
 
 // Button
 $button-corner-radius: 9999px;
@@ -45,7 +46,8 @@ $ease-in-quad: cubic-bezier(0.55,0.085,0.68,0.53);
 $font-xs: 0.625rem;
 $font-sm: 0.9rem;
 $font-normal: 1rem;
-$font-large: 1.125rem;
+$font-lg: 1.125rem;
+$font-xl: 2rem;
 
 * {
   box-sizing: border-box;
@@ -74,7 +76,7 @@ h6 {
 
 h3 {
   font-weight: normal;
-  font-size: $font-large;
+  font-size: $font-lg;
   color: lighten($dark-primary, 10%);
 }
 
@@ -132,7 +134,6 @@ button, input, select, div, span, table, tr, td, a, ul, li {
   display: block;
   position: fixed;
   height: $header-height;
-  max-width: calc($page-max-width + $page-padding-default + $page-padding-default);
   width: 100%;
   margin: 0 auto;
   padding-left: $page-padding-default;
@@ -140,7 +141,8 @@ button, input, select, div, span, table, tr, td, a, ul, li {
   background-color: $white;
 
   p {
-    color: lighten($dark-primary, 10%)
+    color: lighten($dark-primary, 10%);
+    font-weight: 300;
   }
 }
 
@@ -158,6 +160,7 @@ button, input, select, div, span, table, tr, td, a, ul, li {
 
 .search {
   margin-top: $main-margin-top;
+  margin-bottom: 54px;
 }
 
 .search-bar {
@@ -216,22 +219,42 @@ button, input, select, div, span, table, tr, td, a, ul, li {
 
 .highlight-button {
   @include button($button-height-sm, transparent, $white, $font-sm, transparent, $yellow-pink-gradient);
+  border-width: 0px;
+  font-weight: 500;
   @include hover {
     color: $white;
     filter: brightness(110%);
   }
   transition: .16s $ease-out-quad;
   transition-property: border, background-color, color, box-shadow, opacity, filter, transform;
+
+  svg {
+    width: 0.625rem;
+  }
 }
 
 .text-button {
   @include button($button-height-xs, transparent, lighten($light-primary, 1%), $font-sm, transparent, none, 0);
+  align-items: baseline;
   background-color: transparent;
 }
 
 .accordion-button {
   @include button(1.5rem, transparent, $dark-gray, 1rem, transparent, none, 1px);
   background-color: transparent;
+}
+
+.icon-button {
+  @include button(1.375rem, transparent, $light-black, $font-normal, transparent, none, 0);
+  align-items: baseline;
+  @include border(transparent, 0.2rem);
+  @include hover {
+    background-color: $light-gray;
+  }
+
+  svg {
+    stroke-width: 2;
+  }
 }
 
 .loader {
@@ -299,6 +322,10 @@ button, input, select, div, span, table, tr, td, a, ul, li {
   width: 100%;
   padding: 1.5rem 0;
   border-bottom: 1px solid $light-gray;
+
+  &:last-child {
+    border-bottom: 0;
+  }
 }
 
 .dropdown {
@@ -322,24 +349,141 @@ button, input, select, div, span, table, tr, td, a, ul, li {
     @include button(fit-content, $very-light-grey, $light-black, $font-sm, darken($very-light-grey, 5%), none, 0);
     border-radius: 0.5rem;
     position: absolute;
-    min-width: 1.5rem;
+    min-width: 1.6rem;
     top: 100%;
-    margin-top: 0.25rem;
     background-color: $very-light-grey;
     gap: 0;
     flex-direction: column;
     width: 100%;
-  }
 
-  li {
-    cursor: pointer;
-    padding: 0.25rem 0.75rem 0.25rem 0.75rem;
+    li {
+      cursor: pointer;
+      width: 100%;
+      padding: 0.25rem 0 0.25rem 0;
+
+      &:first-child {
+        border-radius: 0.5rem 0.5rem 0 0;
+      }
+
+      &:last-child {
+        border-radius: 0 0 0.5rem 0.5rem;
+      }
+
+      @include hover {
+        background-color: darken($very-light-grey, 10%);
+      }
+    }
   }
 }
 
 .description {
   color: $dark-gray;
   font-weight: 300;
+}
+
+.search-insights {
+  padding-bottom: 1rem;
+  width: 100%;
+  color: $medium-gray;
+  text-align: left;
+
+  .description-row {
+    height: 3rem;
+  }
+
+  .chart {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    @include border(darken($very-light-grey, 5%), 0.5rem);
+    padding: 1rem;
+    color: lighten($dark-gray, 5%);
+
+    .card-header {
+      width: 100%;
+      justify-content: space-between;
+
+      p {
+        font-weight: 600;
+        color: $light-primary;
+        font-size: 1.1rem;
+      }
+    }
+
+    .main-label {
+      font-weight: 500;
+      font-size: $font-sm;
+      color: darken($dark-gray, 10%);
+      padding-right: 0.5rem;
+    }
+
+    .message {
+      padding: 0.5rem;
+      justify-content: center;
+    }
+
+    .main-body {
+      @include flex(1.5rem);
+
+      .stats-card {
+        .main-value-container {
+          text-align: center;
+          color: darken($light-primary, 5%);
+
+          .value {
+            font-size: $font-xl;
+            font-weight: 300;
+          }
+
+          .label {
+            font-size: $font-normal;
+            color: darken($light-primary, 5%);
+          }
+        }
+
+        .details {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-content: center;
+          flex-wrap: wrap;
+          font-size: $font-sm;
+
+          .label {
+            text-align: center;
+            font-weight: 500;
+          }
+
+          .word-container {
+            align-self: center;
+            width: max-content;
+          }
+        }
+
+        .percentage-bar{
+          height: 1em;
+          width: 4em;
+          background-color: lighten($medium-gray, 10%);
+
+          .fill {
+            width: 50%;
+            height: 1em;
+            background-color: $orange;
+          }
+        }
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+        gap: 0.5rem;
+        @include md {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+    }
+
+  }
 }
 
 // Utility classes
@@ -356,10 +500,22 @@ button, input, select, div, span, table, tr, td, a, ul, li {
   text-align: left;
 }
 
+.text-center {
+  text-align: center;
+}
+
 .w-full {
   width: 100%;
 }
 
 .text-sm {
   font-size: $font-sm;
+}
+
+.text-bold {
+  font-weight: 600;
+}
+
+.justify-between {
+  justify-content: space-between;
 }

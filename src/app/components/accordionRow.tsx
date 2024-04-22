@@ -13,7 +13,7 @@ export function AccordionRow({ label, children }: PropsWithChildren<Props>) {
   const button = <ExpandableLabel
     label={{ open: label, closed: label, isEnd: true, className: 'info-row.label' }}
     isOpen={isOpen} toggleOpen={toggleOpen}
-    indicator={(style) => <Image src='/caret-right.svg' alt='caret' width={16} height={16} style={style} />}
+    indicator={(style) => <Image src='/caret-right.svg' alt='caret' width={16} height={16} style={style} priority />}
     buttonClassName='accordion-button'
     indicatorRotationDegrees={90}
   />

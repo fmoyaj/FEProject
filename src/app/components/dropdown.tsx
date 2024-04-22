@@ -1,19 +1,25 @@
-import { HTMLAttributes } from "react";
+import { HTMLAttributes, useEffect } from "react";
 import { Option } from "../lib/types";
-import { useDisclosure } from "../utils/hooks";
+import { useDisclosure, useMouseOverElem } from "../utils/hooks";
 import { DownCaretIcon } from "./down-caret";
 import { ExpandableLabel } from "./expandableLabel";
 
 interface Props<T> {
-  label: string;
   options: Option<T>[];
   onSelect: (option: Option<T>) => void;
   selected: Option<T>;
 }
 
-export function Dropdown<T>({ label, options, onSelect, selected }: Props<T>) {
+export function Dropdown<T>({ options, onSelect, selected }: Props<T>) {
   const { isOpen, toggleOpen, open, close } = useDisclosure();
-  return <div className='dropdown' onMouseLeave={close} onMouseEnter={open}>
+  const [buttonRef, isOverButton] = useMouseOverElem();
+  const [optionsRef, isOverOptions] = useMouseOverElem();
+
+  useEffect(() => {
+    if (!isOverButton && !isOverOptions) close();
+  }, [isOverButton, isOverOptions, close])
+
+  return <div className='dropdown' onMouseEnter={open} ref={buttonRef}>
     <ExpandableLabel
       label={{ open: selected.label, closed: selected.label, isEnd: false }}
       isOpen={isOpen}
@@ -22,10 +28,14 @@ export function Dropdown<T>({ label, options, onSelect, selected }: Props<T>) {
     />
     {
       isOpen &&
-      <ul>
+      <ul ref={optionsRef}>
         {
           options.map((option) =>
-            <li key={option.id} onClick={() => onSelect(option)}>{option.label}</li>)
+            <li
+              key={option.id}
+              className={option.id === selected.id ? 'text-bold' : ''}
+              onClick={() => onSelect(option)}>{option.label}
+            </li>)
         }
       </ul>
     }

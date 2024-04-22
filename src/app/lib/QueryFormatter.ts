@@ -2,34 +2,24 @@ class QueryFormatter {
   public static normalizeQuery(query: string) {
     let normalizedQuery = query;
     normalizedQuery = query.replaceAll(/(and)/ig, "AND");
-    normalizedQuery = normalizedQuery.replaceAll(/(or)/ig, "AND");
+    normalizedQuery = normalizedQuery.replaceAll(/(or)/ig, "OR");
     normalizedQuery = normalizedQuery.replaceAll(/\s+/g, " ");
     normalizedQuery = normalizedQuery.replaceAll(/[^a-zA-Z()\s+]/g, '');
 
     return normalizedQuery;
   }
 
-  private isValidParenthesis(query: string) {
-    const stack = [];
-
-    for (let i = 0; i < query.length; i++) {
-      let char = query[i];
-
-      if (char === "(") {
-        stack.push(char);
-      } else if (char === ")") {
-        stack.pop();
-      }
-    }
-
-    return stack.length === 0;
-  }
-
-  public static getQueryKeywords = (userQuery: string) => {
-    const normalizedQuery = QueryFormatter.normalizeQuery(userQuery);
+  private static getQueryKeywords(query: string) {
     const operators = /(AND)|(OR)|[()]/g;
     const whitespaces = / +/;
-    return Array.from(new Set(normalizedQuery.replaceAll(operators, "").trim().split(whitespaces)));
+    return Array.from(new Set(query.replaceAll(operators, "").trim().split(whitespaces)));
+  }
+
+  public static normalizeAndGetQueryKeywords(query: string): { normalizedQuery: string, keywords: string[] } {
+    const normalizedQuery = QueryFormatter.normalizeQuery(query);
+    const keywords = this.getQueryKeywords(normalizedQuery);
+
+    return { normalizedQuery, keywords };
   }
 }
 
