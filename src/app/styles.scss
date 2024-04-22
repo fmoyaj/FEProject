@@ -308,13 +308,7 @@ button, input, select, div, span, table, tr, td, a, ul, li {
 }
 
 .posts-list {
-  margin-top: 1rem;
   margin-bottom: 1rem;
-
-  @include md {
-    margin-left: 5rem !important;
-    margin-right: 5rem !important;
-  }
 }
 
 .paper-object {
@@ -382,13 +376,14 @@ button, input, select, div, span, table, tr, td, a, ul, li {
 }
 
 .search-insights {
-  padding-bottom: 1rem;
   width: 100%;
   color: $medium-gray;
   text-align: left;
 
   .description-row {
     height: 3rem;
+    @include flex(1.5rem, row);
+    align-items: center;
   }
 
   .chart {

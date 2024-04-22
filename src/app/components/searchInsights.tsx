@@ -20,7 +20,7 @@ export function SearchInsights(
   const insightsText = 'Visualize your results';
 
   return <div className='search-insights'>
-    <div className='flex-row description-row'>
+    <div className='description-row'>
       {
         totalResultsFound !== null &&
         <>
@@ -200,9 +200,7 @@ function PercentageBar({ value, total }: BarProps) {
 
   const percentage = calcPercentage(value, total);
 
-  return (
-    percentage === null || percentage < 10
-  ) ? <></> : <div className='percentage-bar'>
+  return percentage === null ? <></> : <div className='percentage-bar'>
     <div className='fill' style={{ width: `${percentage}%` }}></div>
   </div>
 }
